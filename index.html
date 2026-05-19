@@ -188,6 +188,139 @@ body {
   border-top:9px solid rgba(62,50,55,.92);
 }
 #helpTip .ht { color:#FFE082; font-weight:600; }
+
+/* ── 形象收藏图鉴 ── */
+#albumBtn {
+  position:fixed; bottom:28px; right:80px; z-index:300;
+  width:46px; height:46px; border-radius:50%;
+  background:linear-gradient(135deg,#E8DAEF,#D2B4DE);
+  border:2px solid #8E44AD; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; box-shadow:0 3px 14px rgba(142,68,173,.3);
+  transition:all .25s;
+}
+#albumBtn:hover { transform:scale(1.12); box-shadow:0 5px 22px rgba(142,68,173,.45); }
+#albumBtn .badge {
+  position:absolute; top:-6px; right:-6px;
+  min-width:20px; height:20px; border-radius:10px;
+  background:#E74C3C; color:#fff; font-size:11px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  padding:0 5px; box-shadow:0 2px 8px rgba(231,76,60,.5);
+}
+#albumOverlay {
+  position:fixed; inset:0; z-index:999; pointer-events:none;
+  opacity:0; transition:opacity .3s;
+}
+#albumOverlay.show { pointer-events:auto; opacity:1; }
+#albumMask {
+  position:absolute; inset:0; background:rgba(0,0,0,.55);
+}
+#albumPanel {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(.9);
+  background:linear-gradient(160deg,#FDF2E9,#FADBD8);
+  border-radius:22px; padding:26px 28px 20px;
+  max-width:560px; width:90vw; max-height:82vh; overflow-y:auto;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  transition:transform .3s;
+}
+#albumOverlay.show #albumPanel { transform:translate(-50%,-50%) scale(1); }
+#albumPanel h2 {
+  text-align:center; font-size:22px; color:#5B2C6F; margin:0 0 6px;
+}
+#albumPanel .subt {
+  text-align:center; font-size:12px; color:#888; margin-bottom:16px;
+}
+.album-grid {
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+  gap:14px; justify-items:center;
+}
+.album-card {
+  width:130px; background:#fff; border-radius:16px;
+  padding:14px 8px 10px; text-align:center;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
+  transition:transform .2s, box-shadow .2s;
+  position:relative; overflow:hidden;
+}
+.album-card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,.15); }
+.album-card .card-icon { font-size:38px; margin-bottom:6px; }
+.album-card .card-name { font-size:13px; font-weight:600; color:#4A4A4A; }
+.album-card .card-badge {
+  position:absolute; top:8px; right:8px; font-size:10px;
+  background:#F1C40F; color:#7D6608; padding:2px 6px; border-radius:8px;
+  font-weight:700;
+}
+.album-card.locked { opacity:.55; filter:grayscale(80%); }
+.album-card.locked .card-icon { filter:blur(6px); }
+.album-card.locked .card-name { color:#aaa; }
+.album-card.locked::after {
+  content:'🔒'; position:absolute; inset:0; display:flex;
+  align-items:center; justify-content:center;
+  font-size:32px; background:rgba(255,255,255,.4);
+}
+.album-card.rare { border:2px solid #F1C40F; background:linear-gradient(180deg,#FFFDE7,#fff); }
+.album-card.rare::before {
+  content:'✦'; position:absolute; top:5px; left:8px;
+  font-size:14px; color:#F1C40F;
+}
+.album-close {
+  display:block; margin:18px auto 0;
+  background:#8E44AD; color:#fff; border:none; border-radius:20px;
+  padding:10px 32px; font-size:15px; cursor:pointer;
+  transition:background .2s;
+}
+.album-close:hover { background:#7D3C98; }
+.album-new {
+  display:inline-block; background:#E74C3C; color:#fff;
+  font-size:10px; font-weight:700; padding:2px 6px; border-radius:6px;
+  margin-left:4px; vertical-align:top; animation:pulse 1s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* ── 管理员面板 ── */
+#adminOverlay {
+  position:fixed; inset:0; z-index:2000;
+  background:rgba(0,0,0,.55); display:none;
+  align-items:center; justify-content:center;
+}
+#adminOverlay.show { display:flex; }
+#adminPanel {
+  background:#fff; border-radius:20px; padding:28px 24px;
+  max-width:700px; width:94%; max-height:85vh; overflow-y:auto;
+  box-shadow:0 12px 60px rgba(0,0,0,.18);
+  font-size:14px; color:#333;
+}
+#adminPanel h2 { text-align:center; margin-bottom:16px; color:var(--dark); }
+#adminPanel h3 { margin:18px 0 10px; color:var(--accent); border-bottom:2px solid var(--pri); padding-bottom:4px; }
+#adminPanel .stat-row { display:flex; align-items:center; margin:4px 0; gap:8px; }
+#adminPanel .stat-bar-bg { flex:1; height:22px; background:#f0ece4; border-radius:11px; overflow:hidden; }
+#adminPanel .stat-bar-fill { height:100%; background:linear-gradient(90deg,var(--pri),var(--accent)); border-radius:11px; transition:width .4s; min-width:0; }
+#adminPanel .stat-label { min-width:40px; font-weight:600; }
+#adminPanel .stat-count { min-width:36px; text-align:right; font-size:12px; color:#888; }
+#adminPanel .self-card { background:#f9f7f3; padding:10px 14px; margin:6px 0; border-radius:10px; border-left:4px solid var(--pri); }
+#adminPanel .self-card .q { font-weight:600; color:var(--dark); }
+#adminPanel .self-card .a { color:#666; margin-top:2px; }
+#adminPanel .self-card .ts { font-size:11px; color:#aaa; margin-top:4px; }
+#adminPanel .empty { text-align:center; color:#aaa; padding:20px; }
+#adminPanel .admin-actions { display:flex; gap:8px; margin-top:16px; justify-content:center; flex-wrap:wrap; }
+#adminPanel .admin-actions button {
+  padding:8px 20px; border:1px solid var(--pri); background:#fff;
+  border-radius:20px; cursor:pointer; color:var(--dark); font-size:13px;
+  transition:all .2s;
+}
+#adminPanel .admin-actions button:hover { background:var(--pri); color:#fff; }
+#adminPanel .admin-actions button.danger { border-color:#e88; color:#e55; }
+#adminPanel .admin-actions button.danger:hover { background:#e88; color:#fff; }
+#adminPwdPrompt { text-align:center; }
+#adminPwdPrompt input { padding:10px 16px; border:2px solid var(--pri); border-radius:24px; font-size:14px; width:200px; text-align:center; outline:none; }
+#adminPwdPrompt button { margin-left:8px; padding:10px 22px; background:var(--pri); color:#fff; border:none; border-radius:24px; cursor:pointer; font-size:14px; }
+#adminPwdPrompt .err { color:#e55; margin-top:8px; font-size:13px; }
+#userIdBadge {
+  position:fixed; top:8px; left:50%; transform:translateX(-50%);
+  z-index:300; background:rgba(62,50,55,.78); color:#FFE082;
+  padding:4px 14px; border-radius:14px; font-size:12px;
+  pointer-events:none; opacity:0; transition:opacity .4s;
+}
+#userIdBadge.show { opacity:1; }
 </style>
 </head>
 <body>
@@ -741,6 +874,7 @@ function applyTransform() {
   transLv = next;
   buildChar(TRANS_COLORS[transLv]);
   moveCharTo(gameState.pos);
+  unlockCharacter(next);
 }
 function moveCharTo(idx) {
   const p = POS[idx]; char.position.set(p.x, .2, p.z);
@@ -858,14 +992,18 @@ function showOpGuide() {
 
 function showChoice(td) {
   gameState.canRoll=false; $diceBtn.disabled=true;
+  const opts = td.data.opts;
   $modalBox.innerHTML = `
-    <div class="micon">🔱</div><div class="mtitle">心选择</div>
+    <div class="micon">🎯</div><div class="mtitle">心选择</div>
     <div class="mquestion">${td.data.q}</div>
-    ${td.data.opts.map((o,i)=>`<button class="opt" data-ix="${i}" onclick="pick(${i},this)">${o}</button>`).join('')}
+    ${opts.map((o,i)=>`<button class="opt" data-ix="${i}" onclick="pick(${i},this)">${o}</button>`).join('')}
     <div class="comment" id="cmtArea"></div>
     <button class="cls" onclick="closeModal()">继续前进 →</button>
   `;
-  $modalBox._cmts = td.data.cmts; open();
+  $modalBox._cmts = td.data.cmts;
+  $modalBox._q = td.data.q;       // 供 Analytics 记录
+  $modalBox._opts = opts;         // 供 Analytics 记录
+  open();
 }
 
 function pick(i, btn) {
@@ -874,6 +1012,11 @@ function pick(i, btn) {
   document.getElementById('cmtArea').textContent = $modalBox._cmts[i];
   document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
   btn.disabled=false;
+  // 记录选择
+  if (window._Analytics && $modalBox._q) {
+    const optText = $modalBox._opts ? $modalBox._opts[i] : btn.textContent.trim();
+    window._Analytics.recordChoice($modalBox._q, i, optText);
+  }
 }
 
 function showSelf(td) {
@@ -886,6 +1029,7 @@ function showSelf(td) {
     <div class="comment" id="selfCmt"></div>
     <button class="cls" onclick="closeModal()">继续前进 →</button>
   `;
+  $modalBox._selfQ = td.data;  // 供 Analytics 记录
   open();
   setTimeout(()=>{
     const inp=document.getElementById('selfInp');
@@ -898,6 +1042,10 @@ function showSelf(td) {
         const reps=['欸嘿ヾ(•ω•`)o','真不错╰(*°▽°*)╯','哇哦～'];
         cmt.textContent=reps[Math.floor(Math.random()*reps.length)];
         inp.disabled=true; sub.disabled=true;
+        // 记录心自己
+        if (window._Analytics) {
+          window._Analytics.recordSelf($modalBox._selfQ || '', v);
+        }
       } else { cmt.textContent='写下点什么吧，哪怕只是一个词～'; }
     };
     if(sub) sub.onclick=doSubmit;
@@ -917,7 +1065,7 @@ function showBless(td) {
 }
 
 function showTrans() {
-  gameState.canRoll=false; $diceBtn.disabled=true; applyTransform();
+  gameState.canRoll=false; $diceBtn.disabled=true; checkAlbumFirstVisit(); applyTransform();
   const names = ['粉色','苹果','可爱兔兔','胖大星','牛仔','小丑','天使'];
   $modalBox.innerHTML = `
     <div class="micon">❗</div><div class="mtitle">形象变换！</div>
@@ -1133,6 +1281,7 @@ console.log('💡 鼠标拖拽旋转 | 滚轮缩放 | 方向键平移视角 | �
 
 <!-- 操作说明 -->
 <button id="helpBtn" title="操作说明">💡</button>
+<button id="albumBtn" title="形象图鉴">📖<span class="badge" id="albumBadge" style="display:none">0</span></button>
 <div id="helpTip">
   <span class="ht">🖱️ 鼠标拖拽</span>&ensp;旋转视角<br>
   <span class="ht">🖲️ 滚轮</span>&ensp;拉近 / 拉远<br>
@@ -1151,6 +1300,308 @@ console.log('💡 鼠标拖拽旋转 | 滚轮缩放 | 方向键平移视角 | �
   btn.addEventListener('mouseleave', ()=>{ timer = setTimeout(()=>tip.classList.remove('show'), 200); });
   tip.addEventListener('mouseenter', ()=>{ clearTimeout(timer); });
   tip.addEventListener('mouseleave', ()=>{ tip.classList.remove('show'); });
+})();
+</script>
+
+<script>
+// ── 形象收藏图鉴 ──
+const ALBUM_CHARS = [
+  { name:'粉红变装', icon:'🌸', rare:false },
+  { name:'苹果',     icon:'🍎', rare:true  },
+  { name:'可爱兔兔', icon:'🐰', rare:true  },
+  { name:'派大星',   icon:'⭐', rare:true  },
+  { name:'牛仔',     icon:'🤠', rare:false },
+  { name:'小丑',     icon:'🤡', rare:false },
+  { name:'天使',     icon:'👼', rare:false },
+];
+
+function getAlbumState() {
+  try {
+    const raw = localStorage.getItem('mentality_album');
+    if (raw) { const s = JSON.parse(raw); if (Array.isArray(s.unlocked)) return s; }
+  } catch(e) {}
+  return { unlocked:[0], firstVisit:true, newUnlocks:[] };
+}
+
+function saveAlbumState(st) {
+  localStorage.setItem('mentality_album', JSON.stringify(st));
+}
+
+function unlockCharacter(idx) {
+  const st = getAlbumState();
+  if (!st.unlocked.includes(idx)) {
+    st.unlocked.push(idx);
+    st.newUnlocks.push(idx);
+    saveAlbumState(st);
+    refreshAlbumBadge();
+    updateAlbumPanel();
+  }
+}
+
+function checkAlbumFirstVisit() {
+  const st = getAlbumState();
+  if (st.firstVisit) {
+    st.firstVisit = false;
+    saveAlbumState(st);
+    // highlight the album button briefly
+    const ab = document.getElementById('albumBtn');
+    ab.style.animation = 'pulse .6s 3';
+    setTimeout(() => ab.style.animation = '', 1800);
+  }
+}
+
+function refreshAlbumBadge() {
+  const st = getAlbumState();
+  const badge = document.getElementById('albumBadge');
+  const count = st.newUnlocks.length;
+  if (count > 0) {
+    badge.style.display = 'flex';
+    badge.textContent = count;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function openAlbum() {
+  const st = getAlbumState();
+  st.newUnlocks = [];
+  saveAlbumState(st);
+  refreshAlbumBadge();
+  updateAlbumPanel();
+  document.getElementById('albumOverlay').classList.add('show');
+}
+
+function closeAlbum() {
+  document.getElementById('albumOverlay').classList.remove('show');
+}
+
+function updateAlbumPanel() {
+  const st = getAlbumState();
+  const grid = document.getElementById('albumGrid');
+  document.getElementById('albumCount').textContent = st.unlocked.length;
+  let html = '';
+  for (let i = 0; i < ALBUM_CHARS.length; i++) {
+    const ch = ALBUM_CHARS[i];
+    const unlocked = st.unlocked.includes(i);
+    const isNew = st.newUnlocks && st.newUnlocks.includes(i);
+    html += '<div class="album-card' +
+      (unlocked ? '' : ' locked') +
+      (ch.rare ? ' rare' : '') + '">' +
+      (ch.rare && unlocked ? '<span class="card-badge">稀有</span>' : '') +
+      '<div class="card-icon">' + (unlocked ? ch.icon : '❓') + '</div>' +
+      '<div class="card-name">' + (unlocked ? ch.name : '???') +
+      (isNew ? '<span class="album-new">NEW</span>' : '') + '</div>' +
+      '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+// Init album
+(function(){
+  const st = getAlbumState();
+  if (!st.unlocked.includes(0)) { st.unlocked.push(0); saveAlbumState(st); }
+  refreshAlbumBadge();
+  updateAlbumPanel();
+
+  const ab = document.getElementById('albumBtn');
+  ab.addEventListener('click', openAlbum);
+  document.getElementById('albumMask').addEventListener('click', closeAlbum);
+})();
+</script>
+
+<!-- ── 形象收藏图鉴面板 ── -->
+<div id="albumOverlay">
+  <div id="albumMask"></div>
+  <div id="albumPanel">
+    <h2>📖 形象收藏图鉴</h2>
+    <div class="subt" id="albumSubtitle">共 7 种形象，已解锁 <span id="albumCount">1</span>/7</div>
+    <div class="album-grid" id="albumGrid"></div>
+    <button class="album-close" onclick="closeAlbum()">关 闭</button>
+  </div>
+</div>
+
+<!-- ── 管理员面板 HTML ── -->
+<div id="adminOverlay">
+  <div id="adminPanel">
+    <div id="adminPwdPrompt">
+      <h2>🔐 管理员验证</h2>
+      <input type="password" id="adminPwdInp" placeholder="请输入管理员密码" maxlength="20">
+      <button id="adminPwdBtn">验证</button>
+      <div class="err" id="adminPwdErr"></div>
+    </div>
+    <div id="adminDashboard" style="display:none"></div>
+  </div>
+</div>
+<div id="userIdBadge"></div>
+
+<!-- ── 数据分析 & 管理员系统 ── -->
+<script>
+// ═══════════════ 用户/管理员 数据采集系统 ═══════════════
+(function() {
+  const STORAGE_KEY = 'mentality_data';
+  const ADMIN_PASSWORD = '2204admin';  // ← 修改为你自己的管理员密码
+
+  // ── 用户 ID ──
+  let userId = localStorage.getItem('mentality_uid');
+  if (!userId) {
+    userId = 'U' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
+    localStorage.setItem('mentality_uid', userId);
+  }
+  // 显示用户编号徽章
+  const badge = document.getElementById('userIdBadge');
+  badge.textContent = '🆔 ' + userId;
+  setTimeout(() => badge.classList.add('show'), 1500);
+  setTimeout(() => { if (!badge.classList.contains('pinned')) badge.classList.remove('show'); }, 8000);
+  badge.addEventListener('click', () => { badge.classList.toggle('pinned'); badge.classList.add('show'); });
+
+  // ── 数据读写 ──
+  function getRecords() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveRecord(rec) {
+    const records = getRecords();
+    records.push({ ...rec, userId, ts: Date.now() });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }
+
+  // ── 暴露给游戏逻辑的 API ──
+  window._Analytics = {
+    userId,
+    recordChoice: function(q, optIdx, optText) {
+      saveRecord({ type: 'choice', q, optIdx, optText });
+      console.log('📊 [记录] 心选择:', q, '→', optText);
+    },
+    recordSelf: function(q, text) {
+      saveRecord({ type: 'self', q, text });
+      console.log('📊 [记录] 心自己:', q, '→', text);
+    },
+    getRecords
+  };
+
+  // ── 管理员入口 ──
+  const overlay = document.getElementById('adminOverlay');
+  const pwdPrompt = document.getElementById('adminPwdPrompt');
+  const dashboard = document.getElementById('adminDashboard');
+  const pwdInp = document.getElementById('adminPwdInp');
+  const pwdBtn = document.getElementById('adminPwdBtn');
+  const pwdErr = document.getElementById('adminPwdErr');
+
+  let isAdmin = false;
+
+  function openAdmin() {
+    overlay.classList.add('show');
+    pwdPrompt.style.display = '';
+    dashboard.style.display = 'none';
+    pwdInp.value = '';
+    pwdErr.textContent = '';
+    if (!isAdmin) setTimeout(() => pwdInp.focus(), 200);
+  }
+  function closeAdmin() {
+    overlay.classList.remove('show');
+    if (badge.classList.contains('pinned')) {
+      badge.classList.remove('pinned');
+      badge.classList.remove('show');
+    }
+  }
+
+  pwdBtn.addEventListener('click', () => {
+    if (pwdInp.value === ADMIN_PASSWORD) {
+      isAdmin = true;
+      pwdPrompt.style.display = 'none';
+      renderDashboard();
+      dashboard.style.display = '';
+    } else {
+      pwdErr.textContent = '密码错误，请重试';
+      pwdInp.value = '';
+      pwdInp.focus();
+    }
+  });
+  pwdInp.addEventListener('keydown', e => { if (e.key==='Enter') pwdBtn.click(); });
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeAdmin(); });
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openAdmin(); }
+  });
+
+  // ── 管理员仪表盘渲染 ──
+  function renderDashboard() {
+    const records = getRecords();
+    const choices = records.filter(r => r.type === 'choice');
+    const selves = records.filter(r => r.type === 'self');
+
+    // 统计选择题
+    const choiceMap = {}; // { question: { optText: count } }
+    choices.forEach(r => {
+      if (!choiceMap[r.q]) choiceMap[r.q] = {};
+      const key = r.optText || '(未记录)';
+      choiceMap[r.q][key] = (choiceMap[r.q][key] || 0) + 1;
+    });
+
+    let html = '<h2>📊 数据统计面板</h2>';
+    html += `<p style="text-align:center;color:#888;">共 ${records.length} 条记录 | ${choices.length} 次选择 | ${selves.length} 次心自己 | ${new Set(records.map(r=>r.userId)).size} 位用户</p>`;
+
+    // ── 心选择分布 ──
+    html += '<h3>🎯 心选择 - 选项分布</h3>';
+    if (Object.keys(choiceMap).length === 0) {
+      html += '<div class="empty">暂无选择数据</div>';
+    } else {
+      for (const [q, opts] of Object.entries(choiceMap)) {
+        const total = Object.values(opts).reduce((a,b)=>a+b,0);
+        html += `<div style="font-weight:600;margin-top:10px;">${q}</div>`;
+        for (const [optText, count] of Object.entries(opts)) {
+          const pct = Math.round(count/total*100);
+          const optLabel = optText.length > 30 ? optText.slice(0,30)+'…' : optText;
+          html += `<div class="stat-row">
+            <span class="stat-label">${optLabel}</span>
+            <span class="stat-bar-bg"><span class="stat-bar-fill" style="width:${pct}%"></span></span>
+            <span class="stat-count">${count}票 (${pct}%)</span>
+          </div>`;
+        }
+      }
+    }
+
+    // ── 心自己回复列表 ──
+    html += '<h3>❔ 心自己 - 用户回复</h3>';
+    if (selves.length === 0) {
+      html += '<div class="empty">暂无回复数据</div>';
+    } else {
+      selves.slice().reverse().forEach(r => {
+        const d = new Date(r.ts);
+        const timeStr = d.toLocaleString('zh-CN', { month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit' });
+        html += `<div class="self-card">
+          <div class="q">💬 ${r.q}</div>
+          <div class="a">${escHtml(r.text)}</div>
+          <div class="ts">🆔 ${r.userId || '?'} · ${timeStr}</div>
+        </div>`;
+      });
+    }
+
+    // ── 操作按钮 ──
+    html += `<div class="admin-actions">
+      <button onclick="navigator.clipboard.writeText(JSON.stringify(_Analytics.getRecords(),null,2)).then(()=>alert('已复制到剪贴板'))">📋 导出 JSON</button>
+      <button class="danger" onclick="if(confirm('确定清空所有数据？此操作不可撤销！')){localStorage.removeItem('mentality_data');location.reload();}">🗑️ 清空数据</button>
+      <button onclick="document.getElementById('adminOverlay').classList.remove('show')">✕ 关闭</button>
+    </div>`;
+
+    dashboard.innerHTML = html;
+  }
+
+  function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // 管理员快捷入口提示
+  console.log('🔑 管理员入口: Ctrl+Shift+A 或访问 ?admin');
+  // 支持 ?admin URL 参数直接打开
+  if (location.search.includes('admin')) {
+    setTimeout(openAdmin, 500);
+  }
+
+  // 暴露 API
+  window._Analytics.openAdmin = openAdmin;
+  window._Analytics.refresh = () => { if (isAdmin) renderDashboard(); };
 })();
 </script>
 </body>
