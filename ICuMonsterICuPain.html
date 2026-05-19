@@ -239,6 +239,11 @@ Object.assign(window, THREE);
 
 <script>
 // ═══════════════════ GLTF 模型系统 ═══════════════════
+// 诊断：确认依赖是否加载
+console.log('🔍 THREE:', typeof THREE, 'GLTFLoader:', typeof GLTFLoader);
+if (typeof GLTFLoader === 'undefined') {
+  console.error('❌ GLTFLoader 未定义！请检查 three.min.js 和 GLTFLoader.fixed.js 是否正确加载');
+}
 const modelCache = {};
 const gltfLoader = new GLTFLoader();
 
@@ -285,10 +290,17 @@ function loadModel(url) {
       const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
       const isGLTF = header.includes('gltf+json');
-      gltfLoader.parse(isGLTF ? (new TextDecoder().decode(bytes)) : bytes.buffer, '',
-        (gltf) => { const scene = gltf.scene; normalizeModel(scene); resolve(scene); },
-        (err) => { console.error('❌ 解析失败:', url.substring(0,60)+'...', err.message||err); reject(err); }
-      );
+      console.log('🔬 loadModel 诊断: header=' + header.substring(0,30) + ' isGLTF=' + isGLTF + ' bytesLen=' + bytes.length + ' GLTFLoader类型=' + typeof gltfLoader + ' parse类型=' + typeof gltfLoader.parse);
+      const data = isGLTF ? (new TextDecoder().decode(bytes)) : bytes.buffer;
+      try {
+        gltfLoader.parse(data, '',
+          (gltf) => { const scene = gltf.scene; normalizeModel(scene); resolve(scene); },
+          (err) => { console.error('❌ 解析失败:', url.substring(0,60)+'...', err.message||err, err.stack); reject(err); }
+        );
+      } catch(syncErr) {
+        console.error('❌ parse() 同步抛出:', syncErr.message, syncErr.stack);
+        reject(syncErr);
+      }
       return;
     }
 
