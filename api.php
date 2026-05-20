@@ -9,12 +9,16 @@
  *   4. 确保 PHP 已开启 pdo_mysql 扩展
  */
 
+// 先输出缓冲，防止 InfinityFree 注入广告导致 header 失效
+ob_start();
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Max-Age: 86400');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); ob_end_clean(); exit; }
 
 // ═══════════ 数据库配置（InfinityFree） ═══════════
 $DB_HOST = 'sql308.infinityfree.com';
