@@ -62,8 +62,14 @@ try {
         case 'ping':
             jsonOk(['pong' => true, 'db' => 'connected']);
             break;
+        case 'visitor_next':
+            handleVisitorNext();
+            break;
+        case 'reset_counter':
+            handleResetCounter();
+            break;
         default:
-            jsonError('Unknown action. Available: record, records, import, clear, ping');
+            jsonError('Unknown action. Available: record, records, import, clear, ping, visitor_next');
     }
 } catch (Exception $e) {
     jsonError('Server error: ' . $e->getMessage());
@@ -150,6 +156,26 @@ function handleImport() {
 
     $total = (int)$db->query('SELECT COUNT(*) FROM records')->fetchColumn();
     jsonOk(['imported' => $imported, 'total' => $total]);
+}
+
+/** GET 获取下一个访客编号（全局统一） */
+function handleVisitorNext() {
+    $db = getDB();
+    // 原子递增：UPDATE config SET value=value+1 WHERE key='visitor_count'
+    $db->exec("INSERT INTO `config` (`key`, `value`) VALUES ('visitor_count', '0') ON DUPLICATE KEY UPDATE `value` = `value` + 1");
+    $stmt = $db->query("SELECT `value` FROM `config` WHERE `key` = 'visitor_count'");
+    $row = $stmt->fetch();
+    $next = ((int)($row['value'] ?? 0)) + 1;
+    jsonOk(['visitor_no' => $next]);
+}
+
+/** GET 重置访客编号计数器（管理员用） */
+function handleResetCounter() {
+    $pwd = $_GET['pwd'] ?? '';
+    verifyAdmin($pwd);
+    $db = getDB();
+    $db->exec("UPDATE `config` SET `value` = '0' WHERE `key` = 'visitor_count'");
+    jsonOk(['visitor_count_reset' => true]);
 }
 
 /** POST 清空数据（管理员用） */
